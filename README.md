@@ -1,3 +1,20 @@
+# About
+This Repository is forked from the unity-webxr-export Repository which is itself forked from the official unity-webxr-export repository by firefox.
+This Project is focussing on the Mulitplayer Interaction of multiple Users in one Application.
+This is tasked by the private marketing Company named [Bejoynt](https://www.bejoynt.de/).
+For usage, please contact me.
+You can check the running demo of this project [here](https://bereal.sintar.de/)
+
+# Features
+- VR and NonVR support
+- Basic VR locomotion System
+- two different Rooms:
+    - Bigscale (used for showcasing big Objects)
+    - Showcase (used for showcasing handable Objects)
+ - Different Function Cubes, which can be interacted with and have different FUnctions (duh)
+ 
+ # The Following Is from the Original README.md
+    
 # Unity WebXR Export
 
 You can [check the live demo here](https://de-panther.github.io/unity-webxr-export)
