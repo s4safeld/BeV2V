@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/WebXR/Samples/Desert/Scenes/Desert.unity
-    guid: 85380d4847db7b74a850284461349c36
+    path: Assets/Scenes/MainMenu.unity
+    guid: 02af81e1beaf360428b03fa62623a50c
+  - enabled: 1
+    path: Assets/Scenes/ShowCase.unity
+    guid: 42cf165923f34ce458ae760a27ab72bb
+  - enabled: 1
+    path: Assets/Scenes/Bigscale.unity
+    guid: cc61ac01bf98bfa4286c1aba824516d9
   m_configObjects: {}

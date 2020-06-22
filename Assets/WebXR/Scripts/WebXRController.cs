@@ -50,6 +50,8 @@ namespace WebXR
     {
       for (int i = 0; i < buttons.Length; i++)
       {
+        if(buttons[i].pressed)
+            Debug.Log(buttons[i].ToString());
         WebXRControllerButton button = buttons[i];
         foreach (WebXRControllerInput input in inputMap.inputs)
         {
@@ -137,7 +139,7 @@ namespace WebXR
       return false;
     }
 
-    private void onHeadsetUpdate(Matrix4x4 leftProjectionMatrix,
+    private void OnHeadsetUpdate(Matrix4x4 leftProjectionMatrix,
         Matrix4x4 rightProjectionMatrix,
         Matrix4x4 leftViewMatrix,
         Matrix4x4 rightViewMatrix,
@@ -149,7 +151,7 @@ namespace WebXR
       this.sitStand = sitStandMatrix;
     }
 
-    private void onControllerUpdate(string id,
+    private void OnControllerUpdate(string id,
         int index,
         string handValue,
         bool hasOrientation,
@@ -228,15 +230,15 @@ namespace WebXR
         Debug.LogError("A Input Map must be assigned to WebXRController!");
         return;
       }
-      WebXRManager.Instance.OnControllerUpdate += onControllerUpdate;
-      WebXRManager.Instance.OnHeadsetUpdate += onHeadsetUpdate;
+      WebXRManager.Instance.OnControllerUpdate += OnControllerUpdate;
+      WebXRManager.Instance.OnHeadsetUpdate += OnHeadsetUpdate;
       SetVisible(false);
     }
 
     void OnDisabled()
     {
-      WebXRManager.Instance.OnControllerUpdate -= onControllerUpdate;
-      WebXRManager.Instance.OnHeadsetUpdate -= onHeadsetUpdate;
+      WebXRManager.Instance.OnControllerUpdate -= OnControllerUpdate;
+      WebXRManager.Instance.OnHeadsetUpdate -= OnHeadsetUpdate;
       SetVisible(false);
     }
   }

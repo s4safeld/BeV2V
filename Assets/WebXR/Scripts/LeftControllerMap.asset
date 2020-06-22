@@ -23,3 +23,8 @@ MonoBehaviour:
     gamepadIsButton: 1
     unityInputName: GripLeft
     unityInputIsButton: 0
+  - actionName: Trackpad
+    gamepadId: 1
+    gamepadIsButton: 1
+    unityInputName: GripLeft
+    unityInputIsButton: 0

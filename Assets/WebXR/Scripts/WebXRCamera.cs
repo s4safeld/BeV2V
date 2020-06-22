@@ -4,7 +4,7 @@ namespace WebXR
 {
   public class WebXRCamera : MonoBehaviour
   {
-    private Camera cameraMain, cameraL, cameraR, cameraARL, cameraARR;
+    private Camera cameraMain, cameraL, cameraR/*, cameraARL, cameraARR*/;
     private WebXRState xrState = WebXRState.NORMAL;
 
     private int viewsCount = 1;
@@ -19,8 +19,8 @@ namespace WebXR
       cameraMain = GameObject.Find("CameraMain").GetComponent<Camera>();
       cameraL = GameObject.Find("CameraL").GetComponent<Camera>();
       cameraR = GameObject.Find("CameraR").GetComponent<Camera>();
-      cameraARL = GameObject.Find("CameraARL").GetComponent<Camera>();
-      cameraARR = GameObject.Find("CameraARR").GetComponent<Camera>();
+      //cameraARL = GameObject.Find("CameraARL").GetComponent<Camera>();
+      //cameraARR = GameObject.Find("CameraARR").GetComponent<Camera>();
     }
 
     void Update()
@@ -36,23 +36,23 @@ namespace WebXR
           cameraMain.enabled = false;
           cameraL.enabled = false;
           cameraR.enabled = false;
-          cameraARL.enabled = viewsCount > 0;
-          cameraARL.rect = new Rect(0, 0, 1f / (float)viewsCount, 1);
-          cameraARR.enabled = viewsCount > 1;
+          //cameraARL.enabled = viewsCount > 0;
+          //cameraARL.rect = new Rect(0, 0, 1f / (float)viewsCount, 1);
+          //cameraARR.enabled = viewsCount > 1;
           break;
         case WebXRState.VR:
           cameraMain.enabled = false;
           cameraL.enabled = viewsCount > 0;
           cameraR.enabled = viewsCount > 1;
-          cameraARL.enabled = false;
-          cameraARR.enabled = false;
+          //cameraARL.enabled = false;
+          //cameraARR.enabled = false;
           break;
         case WebXRState.NORMAL:
           cameraMain.enabled = true;
           cameraL.enabled = false;
           cameraR.enabled = false;
-          cameraARL.enabled = false;
-          cameraARR.enabled = false;
+          //cameraARL.enabled = false;
+          //cameraARR.enabled = false;
           break;
       }
     }
@@ -80,10 +80,13 @@ namespace WebXR
       }
       else if (xrState == WebXRState.AR)
       {
-        WebXRMatrixUtil.SetTransformFromViewMatrix(cameraARL.transform, leftViewMatrix * sitStandMatrix.inverse);
-        cameraARL.projectionMatrix = leftProjectionMatrix;
-        WebXRMatrixUtil.SetTransformFromViewMatrix(cameraARR.transform, rightViewMatrix * sitStandMatrix.inverse);
-        cameraARR.projectionMatrix = rightProjectionMatrix;
+                Debug.Log("If you are seeing this, the XR State is set to AR. Which should not be possible. There must be a problem with the XR settings of the project. " +
+                    "\nGo and punch the programmer in the Face for not doing his job correctly. " +
+                    "\nOr you know what, don't do that, because that must be me.");
+        //WebXRMatrixUtil.SetTransformFromViewMatrix(cameraARL.transform, leftViewMatrix * sitStandMatrix.inverse);
+        //cameraARL.projectionMatrix = leftProjectionMatrix;
+        //WebXRMatrixUtil.SetTransformFromViewMatrix(cameraARR.transform, rightViewMatrix * sitStandMatrix.inverse);
+        //cameraARR.projectionMatrix = rightProjectionMatrix;
       }
     }
   }
