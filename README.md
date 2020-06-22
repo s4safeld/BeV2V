@@ -13,6 +13,9 @@ You can check the running demo of this project [here](https://bereal.sintar.de/)
     - Showcase (used for showcasing handable Objects)
  - Different Function Cubes, which can be interacted with and have different FUnctions (duh)
  
+ Note:
+ Every Model you will encounter is a Placeholder taken from [sketchfab](https://sketchfab.com/) and thus subject to change!
+ 
  # The Following Is from the Original README.md
     
 # Unity WebXR Export
