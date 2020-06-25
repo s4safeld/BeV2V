@@ -13,7 +13,7 @@ namespace WebXR
         private Rigidbody currentRigidBody = null;
         private List<Rigidbody> contactRigidBodies = new List<Rigidbody>();
         private LineRenderer lr;
-        private Transform xrRigTransform;
+        private Transform rig;
         private Animator anim;
         public GameObject cursor;
         private bool tpEnabled;
@@ -30,7 +30,7 @@ namespace WebXR
             lr = gameObject.GetComponent<LineRenderer>();
             lr.enabled = false;
             
-            xrRigTransform = FindObjectsOfType<GameObject>().First(obj => obj.name.Contains("WebXRCameraSet")).transform;
+            rig = transform.parent;
         }
 
         void Update()
@@ -94,37 +94,17 @@ namespace WebXR
 
         public void Pickup()
         {
-            currentRigidBody = GetNearestRigidBody();
-
-            if (!currentRigidBody)
-            {
-                Debug.Log("Pickup Call has been fired unsuccesfully");
-                return;
-            }
-            else
-            {
-                Debug.Log("Pickup Call has been fired succesfully for: " + currentRigidBody.name);
-            }
-            
-            Debug.Log("Requesting Ownership for: " + currentRigidBody.name);
-            currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
-            StartCoroutine(waitAndPickup());   
+            int id = GetNearestRigidBody().GetComponent<PhotonView>().ViewID;
+            transform.GetChild(0).gameObject.GetComponent<PhotonView>().RPC("pickup", RpcTarget.All, id);
         }
 
         public void Drop()
         {
-            Debug.Log("Drop Call has been fired on: " + currentRigidBody.name);
-
-            if (!currentRigidBody)
-                return;
-
-            attachJoint.connectedBody = null;
-            currentRigidBody = null;
+            transform.GetChild(0).gameObject.GetComponent<PhotonView>().RPC("drop", RpcTarget.All);
         }
 
         public void callFunction()
         {
-
             currentRigidBody = GetNearestRigidBody();
             Debug.Log("Function Call has been fired on: " + currentRigidBody.name);
 
@@ -141,25 +121,24 @@ namespace WebXR
                 currentRigidBody.GetComponent<LeaveRoom>().leaveRoom();
                 Debug.Log("Leave Room has been called for: " + currentRigidBody.name);
             }
-
-
         }
 
         public void teleport()
         {
             Debug.Log("Teleport Call has been fired");
+            Transform cam = FindObjectsOfType<GameObject>().First(obj => obj.name == "CameraR").transform;
+            float dist = Vector3.Distance(new Vector3(cam.position.x, 0, cam.position.z), new Vector3(rig.position.x, 0, rig.position.z));
+            Vector3 dir = new Vector3(rig.position.x, 0, rig.position.z) - new Vector3(cam.position.x, 0, cam.position.z);
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.rotation * Vector3.forward, out hit))
             {
                 if (hit.collider.tag == "tpPlatform")
                 {
-                    Debug.Log("tpPlatform hit");
-                    xrRigTransform.SetPositionAndRotation(new Vector3(hit.point.x, xrRigTransform.position.y, hit.point.z), xrRigTransform.rotation);
+                    rig.position = new Vector3(hit.point.x, rig.position.y, hit.point.z);
+                    rig.Translate(new Vector3(dir.x,0,dir.z));
                 }
-                Debug.Log("hit.point = " + hit.point + "\nhit.name = " + hit.ToString() + "\nhit.collider.tag" + hit.collider.tag);
             }
         }
-
         //-----------------------------\\
 
         //-----supporting Functions----\\

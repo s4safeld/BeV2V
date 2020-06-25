@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4901933276736182557}
   - component: {fileID: 6065915361750576933}
   - component: {fileID: 29440692013527542}
+  - component: {fileID: 6292585284942036246}
   m_Layer: 0
   m_Name: hand_right
   m_TagString: Untagged
@@ -122,6 +123,18 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!114 &6292585284942036246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5384760733205240255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be03ed09ec963b45aed1ad1829a55ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5053177332110877526
 PrefabInstance:
   m_ObjectHideFlags: 0

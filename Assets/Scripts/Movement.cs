@@ -35,18 +35,12 @@ public class Movement : MonoBehaviour
         {
             transform.SetPositionAndRotation(new Vector3(transform.position.x, GlobalInformation.height ,transform.position.z), transform.rotation);
         }
-        //PV = FindObjectsOfType<PhotonView>().First();
-        //Debug.Log(PV.ToString());
-        //PV = GetComponent<PhotonView>();
-        //myCC = GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (initialised && !GlobalInformation.vrReady)
         {
-            //Debug.Log("Movement vr ready: "+GlobalInformation.vrReady + "\nNon Vr Movement Script Enabled...");
             BasicMovement();
             BasicRotation();
             BasicSelection();
@@ -100,7 +94,7 @@ public class Movement : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                transform.Rotate(new Vector3(0, Mathf.Clamp(-1, -10000, 10000), 0));
+                transform.Rotate(new Vector3(0, -1, 0));
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
@@ -108,22 +102,22 @@ public class Movement : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                transform.Rotate(new Vector3(0, Mathf.Clamp(1, -10000, 10000), 0));
+                transform.Rotate(new Vector3(0, 1, 0));
             }
 
         }
         else
         {
-            //Debug.Log("Camera rotation x = " + camTransform.rotation.x);
+            Debug.Log("Camera rotation = " + camTransform.rotation);
             if (camTransform.localRotation.x > 0.7)
             {
-                //camTransform.Rotate(new Vector3(0.1f,0,0));
-                camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
+                camTransform.Rotate(new Vector3(0.1f,0,0));
+                //camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
             }
             else
             {
-                //camTransform.Rotate(new Vector3(-0.1f, 0, 0));
-                camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(-0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
+                camTransform.Rotate(new Vector3(-0.1f, 0, 0));
+                //camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(-0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
             }
 
         }
@@ -135,13 +129,15 @@ public class Movement : MonoBehaviour
         crosshair.SetActive(true);
         RaycastHit hit;
 
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             if (Physics.Raycast(crosshair.transform.position, crosshair.transform.rotation * Vector3.forward, out hit))
             {
+                Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
                 if (hit.collider.tag == "Spawner")
                 {
                     hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
+                    return;
                 }
                 if (hit.collider.tag == "spawnable")
                 {
@@ -149,14 +145,21 @@ public class Movement : MonoBehaviour
                     Debug.Log("Requesting Ownership for: " + currentRigidBody.name + " for Teleporting");
                     currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
                     currentRigidBody.MovePosition(crosshair.transform.position);
+                    return;
                 }
                 if (hit.collider.tag == "Leaver")
                 {
                     hit.collider.GetComponent<LeaveRoom>().leaveRoom();
                     Debug.Log("Leave Room has been called for: " + hit.collider.name);
+                    return;
                 }
-                Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
+                //Debugging
+                
+                //---------
             }
+
+
+
             StartCoroutine("DisableScript");
         }
     }

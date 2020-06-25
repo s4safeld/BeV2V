@@ -17,7 +17,7 @@ public class MainMenuController : MonoBehaviour
     private void Start()
     {
         //Sets the Values of the Menu Options to the Global Information Values
-        //This is important if the menu is opened a second time
+        //This is important for when the menu is opened a second time
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("VrReadyToggle")).GetComponent<Toggle>().isOn = GlobalInformation.vrReady;
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("HeightSlider")).GetComponent<Slider>().value = GlobalInformation.height;
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("MovementSpeedSlider")).GetComponent<Slider>().value = GlobalInformation.movementSpeed;
@@ -50,7 +50,7 @@ public class MainMenuController : MonoBehaviour
     //The division by 10 is because the Slider moves in steps does steps, thats completely optional
     public void setHeight(float input)
     {
-        heightText.text = "" + (input/10).ToString("0.00");   //Trimming number
+        heightText.text = "" + (input/10).ToString("0.00") + "m";   //Trimming number
         GlobalInformation.setHeight(input/10);
     }
     public void setMovSpeed(float input)
