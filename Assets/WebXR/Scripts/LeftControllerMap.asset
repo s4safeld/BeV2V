@@ -23,8 +23,43 @@ MonoBehaviour:
     gamepadIsButton: 1
     unityInputName: GripLeft
     unityInputIsButton: 0
-  - actionName: Trackpad
-    gamepadId: 1
+  - actionName: 2
+    gamepadId: 2
     gamepadIsButton: 1
-    unityInputName: GripLeft
+    unityInputName: 2
+    unityInputIsButton: 0
+  - actionName: 3
+    gamepadId: 3
+    gamepadIsButton: 1
+    unityInputName: 3
+    unityInputIsButton: 0
+  - actionName: 4
+    gamepadId: 4
+    gamepadIsButton: 1
+    unityInputName: 4
+    unityInputIsButton: 0
+  - actionName: 5
+    gamepadId: 5
+    gamepadIsButton: 1
+    unityInputName: 5
+    unityInputIsButton: 0
+  - actionName: 6
+    gamepadId: 6
+    gamepadIsButton: 1
+    unityInputName: 6
+    unityInputIsButton: 0
+  - actionName: 7
+    gamepadId: 7
+    gamepadIsButton: 1
+    unityInputName: 7
+    unityInputIsButton: 0
+  - actionName: 8
+    gamepadId: 8
+    gamepadIsButton: 1
+    unityInputName: 8
+    unityInputIsButton: 0
+  - actionName: 9
+    gamepadId: 9
+    gamepadIsButton: 1
+    unityInputName: 9
     unityInputIsButton: 0

@@ -16,15 +16,18 @@ public class Movement : MonoBehaviour
     public float movementSpeed = GlobalInformation.movementSpeed;
     public float rotationSpeed = GlobalInformation.rotationSpeed;
     private bool initialised = false;
+    public bool blocked = false;
 
-    public GameObject crosshair;
+    GameObject pickedUp;
+
+    //public GameObject crosshair;
 
     private void Start()
     {
         camTransform = FindObjectsOfType<GameObject>().First(obj => obj.name == "Cameras").transform;
         pm = this;
         myCC = GetComponent<CharacterController>();
-        crosshair.SetActive(false);
+        //crosshair.SetActive(false);
     }
     
     public void Initialise()
@@ -39,7 +42,7 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        if (initialised && !GlobalInformation.vrReady)
+        if (initialised && !GlobalInformation.vrReady && !blocked)
         {
             BasicMovement();
             BasicRotation();
@@ -86,7 +89,6 @@ public class Movement : MonoBehaviour
                 float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * rotationSpeed;
                 transform.Rotate(new Vector3(0, mouseX, 0));
                 camTransform.Rotate(new Vector3(Mathf.Clamp(-mouseY, -0.7f, 0.7f), 0, 0));
-
             }
             if (Input.GetKey(KeyCode.UpArrow))
             {
@@ -111,12 +113,12 @@ public class Movement : MonoBehaviour
             Debug.Log("Camera rotation = " + camTransform.rotation);
             if (camTransform.localRotation.x > 0.7)
             {
-                camTransform.Rotate(new Vector3(0.1f,0,0));
+                camTransform.Rotate(new Vector3(-0.1f,0,0));
                 //camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
             }
             else
             {
-                camTransform.Rotate(new Vector3(-0.1f, 0, 0));
+                camTransform.Rotate(new Vector3(+0.1f, 0, 0));
                 //camTransform.SetPositionAndRotation(camTransform.position, new Quaternion(-0.69f, camTransform.rotation.y, camTransform.rotation.z, camTransform.rotation.w));
             }
 
@@ -126,43 +128,109 @@ public class Movement : MonoBehaviour
     }
 
     void BasicSelection() {
-        crosshair.SetActive(true);
+        //crosshair.SetActive(true);
         RaycastHit hit;
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            if (Physics.Raycast(crosshair.transform.position, crosshair.transform.rotation * Vector3.forward, out hit))
+            if (pickedUp)
             {
-                Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
-                if (hit.collider.tag == "Spawner")
-                {
-                    hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
-                    return;
-                }
-                if (hit.collider.tag == "spawnable")
-                {
-                    Rigidbody currentRigidBody = hit.collider.GetComponent<Rigidbody>();
-                    Debug.Log("Requesting Ownership for: " + currentRigidBody.name + " for Teleporting");
-                    currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
-                    currentRigidBody.MovePosition(crosshair.transform.position);
-                    return;
-                }
-                if (hit.collider.tag == "Leaver")
-                {
-                    hit.collider.GetComponent<LeaveRoom>().leaveRoom();
-                    Debug.Log("Leave Room has been called for: " + hit.collider.name);
-                    return;
-                }
-                //Debugging
-                
-                //---------
+                drop();
             }
+            else
+            {
+                if (Physics.Raycast(camTransform.GetChild(0).GetComponent<Camera>().ScreenPointToRay(Input.mousePosition), out hit))
+                {
+                    Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
+                    if (hit.collider.tag == "Spawner")
+                    {
+                        hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
+                        return;
+                    }
+                    if (hit.collider.tag == "spawnable")
+                    {
+                        /*Rigidbody currentRigidBody = hit.collider.GetComponent<Rigidbody>();
+                        Debug.Log("Requesting Ownership for: " + currentRigidBody.name + " for Teleporting");
+                        currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
+                        currentRigidBody.MovePosition(crosshair.transform.position);
+                        return;*/
+                        Pickup(hit.collider.gameObject);
+                    }
+                    if (hit.collider.tag == "Leaver")
+                    {
+                        hit.collider.GetComponent<LeaveRoom>().leaveRoom();
+                        Debug.Log("Leave Room has been called for: " + hit.collider.name);
+                        return;
+                    }
+                    //Debugging
 
-
-
+                    //---------
+                }
+                
+            }
             StartCoroutine("DisableScript");
         }
     }
+
+    public void Pickup(GameObject obj)
+    {
+        GameObject crosshair = camTransform.GetChild(0).GetChild(0).gameObject;
+        obj.transform.position = crosshair.transform.position; //+ new Vector3(getWidth(obj), 0, 0);
+        int id = obj.GetComponent<PhotonView>().ViewID;
+
+        pickedUp = obj;
+
+        //getting crosshair Object
+        crosshair.GetComponent<PhotonView>().RPC("pickup", RpcTarget.All, id);        
+    }
+
+    public void drop()
+    {
+        Debug.Log("drop has been called");
+        GameObject crosshair = camTransform.GetChild(0).GetChild(0).gameObject;
+        pickedUp = null;
+        crosshair.GetComponent<PhotonView>().RPC("drop", RpcTarget.All);
+    }
+
+    float getWidth(GameObject obj)
+    {
+        Bounds bounds = obj.GetComponent<Collider>().bounds;
+        return bounds.max.x;
+    }
+
+    /*private void OnMouseDown()
+    {
+        Debug.Log("OnMouseDown called");
+        if (!GlobalInformation.vrReady)
+        {
+            Ray ray = camTransform.GetChild(0).GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            Physics.Raycast(ray, out hit);
+
+            Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
+            if (hit.collider.tag == "Spawner")
+            {
+                hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
+                return;
+            }
+            if (hit.collider.tag == "spawnable")
+            {
+                Rigidbody currentRigidBody = hit.collider.GetComponent<Rigidbody>();
+                Debug.Log("Requesting Ownership for: " + currentRigidBody.name + " for Teleporting");
+                currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
+                currentRigidBody.MovePosition(crosshair.transform.position);
+                return;
+            }
+            if (hit.collider.tag == "Leaver")
+            {
+                hit.collider.GetComponent<LeaveRoom>().leaveRoom();
+                Debug.Log("Leave Room has been called for: " + hit.collider.name);
+                return;
+            }
+        }
+    }
+    */
 
     IEnumerator DisableScript()
     {

@@ -8,29 +8,43 @@ public class Pickup : MonoBehaviourPunCallbacks
     private List<Rigidbody> contactRigidBodies = new List<Rigidbody>();
     private FixedJoint attachJoint;
     private Rigidbody currentRigidBody;
+    public PhotonView PV;
 
     private void Start()
     {
         attachJoint = GetComponent<FixedJoint>();
+        PV = GetComponent<PhotonView>();
     }
 
     [PunRPC]
     public void pickup(int id)
     {
-        currentRigidBody = PhotonView.Find(id).gameObject.GetComponent<Rigidbody>();
-
-        if (!currentRigidBody)
-        {
-            Debug.Log("Pickup Call has been fired unsuccesfully");
-            return;
-        }
-        else
-        {
+            currentRigidBody = PhotonView.Find(id).gameObject.GetComponent<Rigidbody>();
+            
+            if (!currentRigidBody)
+            {
+                Debug.LogWarning("Pickup Call has been fired unsuccesfully");
+                return;
+            }
+            if (currentRigidBody.tag != "spawnable")
+            {
+                Debug.LogWarning(currentRigidBody.name+" is not an spawnable Object");
+                return;
+            }
+                    
             Debug.Log("Pickup Call has been fired succesfully for: " + currentRigidBody.name);
-        }
+            
+            if (currentRigidBody.GetComponent<Spawnable>().attached)
+            {
+                currentRigidBody.GetComponent<Spawnable>().attachedView.RPC("drop", RpcTarget.All);
+            }
 
-        currentRigidBody.MovePosition(transform.position);
-        attachJoint.connectedBody = currentRigidBody;
+            
+
+            currentRigidBody.MovePosition(transform.position);
+            attachJoint.connectedBody = currentRigidBody;
+            currentRigidBody.GetComponent<Spawnable>().attached = true;
+            currentRigidBody.GetComponent<Spawnable>().attachedView = PV;
     }
 
     [PunRPC]
@@ -42,6 +56,8 @@ public class Pickup : MonoBehaviourPunCallbacks
             return;
 
         attachJoint.connectedBody = null;
+        currentRigidBody.GetComponent<Spawnable>().attached = false;
+        currentRigidBody.GetComponent<Spawnable>().attachedView = null;
         currentRigidBody = null;
     }
 

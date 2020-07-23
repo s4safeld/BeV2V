@@ -9,6 +9,7 @@ public class GlobalInformation : MonoBehaviour
     public static float movementSpeed = 5;
     public static float rotationSpeed = 100;
     public static string currScene = "Menu";
+    public static string username;
 
     private void Start()
     {

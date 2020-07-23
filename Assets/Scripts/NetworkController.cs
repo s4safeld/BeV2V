@@ -37,6 +37,9 @@ public class NetworkController : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings(); //connecting to Master Server
         spawnPos.Set(0, 1, 0);
         Debug.Log("Vr activated: " + GlobalInformation.vrReady);
+        Debug.LogWarning("Sendrate: " + PhotonNetwork.SendRate + "\nSerializationRate: " + PhotonNetwork.SerializationRate);
+
+
     }
 
     //Is called once connected to Master Server
@@ -45,6 +48,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
         Debug.Log("We are now connected to the " + PhotonNetwork.CloudRegion + " server!");
         logtext.text = "We are now connected to the " + PhotonNetwork.CloudRegion + " server!";
         PhotonNetwork.JoinRoom(roomName);
+        PhotonNetwork.NickName = GlobalInformation.username;
     }
 
     //Called if joining failed, probably because there is no room
@@ -118,8 +122,16 @@ public class NetworkController : MonoBehaviourPunCallbacks
             handRight.transform.localRotation = Quaternion.identity;
             //handRight.GetComponent<PhotonView>().RequestOwnership();
         }
+        else
+        {
+            GameObject crosshair = PhotonNetwork.Instantiate(Path.Combine("Prefabs","crosshair"), Vector3.zero, Quaternion.identity);
+            crosshair.transform.parent = XR.transform.GetChild(0).GetChild(0).transform;
+            crosshair.transform.localRotation = Quaternion.identity;
+            crosshair.transform.localPosition = new Vector3(0,0,1f);
+        }
 
         XR.GetComponent<Movement>().Initialise();
+        FindObjectsOfType<GameObject>().First(obj => obj.name == "ChatManager").GetComponent<ChatManager>().Initialise();
         Debug.Log("Initialise Function called");
     }
 
