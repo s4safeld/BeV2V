@@ -8,12 +8,20 @@ using UnityEngine.SceneManagement;
 
 public class LeaveRoom : MonoBehaviourPunCallbacks
 {
+    private bool leave;
     public void leaveRoom() {
-        StartCoroutine(DisableScript());
-        PhotonNetwork.Disconnect();
-        Destroy(GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("WebXRCameraSet")));
-        SceneManager.LoadScene("MainMenu");
-        GlobalInformation.currScene = "Menu";
+        leave = true;
+        Debug.Log("Leaving...");
+    }
+    private void Update()
+    {
+        if (leave && GlobalInformation.connected) {
+            StartCoroutine(DisableScript());
+            PhotonNetwork.Disconnect();
+            Destroy(GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("WebXRCameraSet")));
+            SceneManager.LoadScene("MainMenu");
+            GlobalInformation.currScene = "Menu";
+        }
     }
 
     //This is just disabling the Script for a short time, so that the function wont be called multiple times in a second
@@ -25,5 +33,4 @@ public class LeaveRoom : MonoBehaviourPunCallbacks
 
         this.enabled = true;
     }
-
 }

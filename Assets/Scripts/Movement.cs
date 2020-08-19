@@ -12,37 +12,40 @@ public class Movement : MonoBehaviour
     private Movement pm;
 
     Transform camTransform;
+    Transform rightCam;
 
     public float movementSpeed = GlobalInformation.movementSpeed;
     public float rotationSpeed = GlobalInformation.rotationSpeed;
     private bool initialised = false;
     public bool blocked = false;
+    public bool connected = false;
 
     GameObject pickedUp;
 
     //public GameObject crosshair;
 
-    private void Start()
+    private void Awake()
     {
-        camTransform = FindObjectsOfType<GameObject>().First(obj => obj.name == "Cameras").transform;
+        GlobalInformation.XRSet = gameObject;
+        camTransform = gameObject.transform.Find("Cameras");
+        rightCam = camTransform.Find("CameraR");
         pm = this;
         myCC = GetComponent<CharacterController>();
+
+        resetPosition();
         //crosshair.SetActive(false);
     }
-    
-    public void Initialise()
+    public void resetPosition()
     {
-        Debug.Log("Initialise Function call received");
-        initialised = true;
-        if ((transform.position.y < 0.5f && transform.position.y > -0.5f))
-        {
-            transform.SetPositionAndRotation(new Vector3(transform.position.x, GlobalInformation.height ,transform.position.z), transform.rotation);
-        }
+        Vector3 dir = new Vector3(transform.position.x, 0, transform.position.z) - new Vector3(rightCam.position.x, 0, rightCam.position.z);
+        transform.position = new Vector3(0, GlobalInformation.height, 0);
+        transform.Translate(new Vector3(dir.x, dir.y, dir.z));
     }
+
 
     void Update()
     {
-        if (initialised && !GlobalInformation.vrReady && !blocked)
+        if (!GlobalInformation.vrReady && !blocked)
         {
             BasicMovement();
             BasicRotation();
@@ -144,7 +147,8 @@ public class Movement : MonoBehaviour
                     Debug.Log("hit.point = " + hit.point + "\nhit.collider.name = " + hit.collider.name);
                     if (hit.collider.tag == "Spawner")
                     {
-                        hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
+                        if(GlobalInformation.connected)
+                            hit.collider.GetComponent<PhotonView>().RPC("SpawnObject", RpcTarget.All);
                         return;
                     }
                     if (hit.collider.tag == "spawnable")
@@ -154,7 +158,8 @@ public class Movement : MonoBehaviour
                         currentRigidBody.GetComponent<PhotonView>().RequestOwnership();
                         currentRigidBody.MovePosition(crosshair.transform.position);
                         return;*/
-                        Pickup(hit.collider.gameObject);
+                        if(GlobalInformation.connected)
+                            Pickup(hit.collider.gameObject);
                     }
                     if (hit.collider.tag == "Leaver")
                     {
@@ -165,8 +170,7 @@ public class Movement : MonoBehaviour
                     //Debugging
 
                     //---------
-                }
-                
+                } 
             }
             StartCoroutine("DisableScript");
         }
@@ -174,13 +178,13 @@ public class Movement : MonoBehaviour
 
     public void Pickup(GameObject obj)
     {
+        //getting crosshair Object
         GameObject crosshair = camTransform.GetChild(0).GetChild(0).gameObject;
         obj.transform.position = crosshair.transform.position; //+ new Vector3(getWidth(obj), 0, 0);
         int id = obj.GetComponent<PhotonView>().ViewID;
 
         pickedUp = obj;
 
-        //getting crosshair Object
         crosshair.GetComponent<PhotonView>().RPC("pickup", RpcTarget.All, id);        
     }
 

@@ -10,9 +10,13 @@ public class GlobalInformation : MonoBehaviour
     public static float rotationSpeed = 100;
     public static string currScene = "Menu";
     public static string username;
+    public static ChatManager chatmanager;
+    public static bool connected = false;
+    public static GameObject XRSet;
 
     private void Start()
     {
+
         if (GameObject.FindObjectOfType<GlobalInformation>() != this)
             Destroy(this);
         else

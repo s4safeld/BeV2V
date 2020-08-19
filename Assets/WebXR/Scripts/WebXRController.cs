@@ -51,7 +51,7 @@ namespace WebXR
       for (int i = 0; i < buttons.Length; i++)
       {
         if(buttons[i].pressed)
-            Debug.Log(buttons[i].ToString());
+            Debug.Log("WebXRController Line 54: "+buttons[i].value);
         WebXRControllerButton button = buttons[i];
         foreach (WebXRControllerInput input in inputMap.inputs)
         {

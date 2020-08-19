@@ -129,8 +129,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
             crosshair.transform.localRotation = Quaternion.identity;
             crosshair.transform.localPosition = new Vector3(0,0,1f);
         }
-
-        XR.GetComponent<Movement>().Initialise();
+        GlobalInformation.connected = true;
         FindObjectsOfType<GameObject>().First(obj => obj.name == "ChatManager").GetComponent<ChatManager>().Initialise();
         Debug.Log("Initialise Function called");
     }
@@ -153,6 +152,7 @@ public class NetworkController : MonoBehaviourPunCallbacks
     {
         Debug.Log(otherPlayer + " left room " + PhotonNetwork.CurrentRoom);
         logtext.text = ("Player '" + otherPlayer.NickName + "' left room.\n" + PhotonNetwork.CurrentRoom);
+        GlobalInformation.chatmanager.UserDisconnected(otherPlayer.NickName);
     }
 
     //------------------------------------------------------------
