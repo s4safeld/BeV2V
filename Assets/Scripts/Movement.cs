@@ -19,6 +19,11 @@ public class Movement : MonoBehaviour
     private bool initialised = false;
     public bool blocked = false;
     public bool connected = false;
+    public Vector3 startPosition;
+    public Quaternion startRotation;
+
+    //Debugging
+    //--------------
 
     GameObject pickedUp;
 
@@ -26,6 +31,15 @@ public class Movement : MonoBehaviour
 
     private void Awake()
     {
+        if (GlobalInformation.vrReady || GlobalInformation.desktopReady) {
+            startPosition = new Vector3(0, GlobalInformation.height,-2);
+            startRotation = transform.rotation;
+        }
+        if (GlobalInformation.mobileReady) {
+            startPosition = new Vector3(6,4,0);
+            startRotation = new Quaternion(0.2f, -0.7f, 0.2f, 0.7f);
+            blocked = true;
+        }
         GlobalInformation.XRSet = gameObject;
         camTransform = gameObject.transform.Find("Cameras");
         rightCam = camTransform.Find("CameraR");
@@ -38,7 +52,9 @@ public class Movement : MonoBehaviour
     public void resetPosition()
     {
         Vector3 dir = new Vector3(transform.position.x, 0, transform.position.z) - new Vector3(rightCam.position.x, 0, rightCam.position.z);
-        transform.position = new Vector3(0, GlobalInformation.height, 0);
+        transform.position = startPosition;
+        if(GlobalInformation.mobileReady)
+            transform.rotation = startRotation;
         transform.Translate(new Vector3(dir.x, dir.y, dir.z));
     }
 
@@ -49,8 +65,8 @@ public class Movement : MonoBehaviour
         {
             BasicMovement();
             BasicRotation();
-            BasicSelection();
         }
+        BasicSelection();
     }
 
     void BasicMovement()

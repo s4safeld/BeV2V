@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GlobalInformation : MonoBehaviour
 {
-    public static bool vrReady = true;
+    public static bool vrReady = false;
+    public static bool desktopReady = false;
+    public static bool mobileReady = false;
     public static float height = 10.0f;
     public static float movementSpeed = 5;
     public static float rotationSpeed = 100;
@@ -27,12 +29,6 @@ public class GlobalInformation : MonoBehaviour
     {
         height = input;
         Debug.Log("GlobalInformation: Height set to: " + height + "m");
-    }
-
-    public static void setVrReady(bool input)
-    {
-        vrReady = input;
-        Debug.Log("Global Information: vrReady set to: " + vrReady);
     }
     public static void setMovementSpeed(float inputSpeed)
     {

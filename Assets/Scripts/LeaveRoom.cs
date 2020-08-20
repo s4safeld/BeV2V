@@ -28,9 +28,7 @@ public class LeaveRoom : MonoBehaviourPunCallbacks
     IEnumerator DisableScript()
     {
         this.enabled = false;
-
         yield return new WaitForSeconds(0.1f);
-
         this.enabled = true;
     }
 }

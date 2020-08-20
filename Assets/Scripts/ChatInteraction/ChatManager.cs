@@ -244,7 +244,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     }
     public void ResumeMovement()
     {
-        XRSet.GetComponent<Movement>().blocked = false;
+        if(!GlobalInformation.mobileReady)
+            XRSet.GetComponent<Movement>().blocked = false;
         Debug.Log("Movement resumed");
     }
     public void toggleKeyboard()

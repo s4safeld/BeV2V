@@ -2534,6 +2534,8 @@ MonoBehaviour:
   rotationSpeed: 100
   blocked: 0
   connected: 0
+  startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!143 &1221042607
 CharacterController:
   m_ObjectHideFlags: 0

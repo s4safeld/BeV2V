@@ -16,12 +16,12 @@ public class MainMenuController : MonoBehaviour
     public InputField usernameInput;
     public Button JoinShowcaseButton;
     public Button JoinBigscaleButton;
+    public Dropdown selectPlatform;
 
     private void Start()
     {
         //Sets the Values of the Menu Options to the Global Information Values
         //This is important for when the menu is opened a second time
-        GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("VRReadyToggle")).GetComponent<Toggle>().isOn = GlobalInformation.vrReady;
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("HeightSlider")).GetComponent<Slider>().value = GlobalInformation.height;
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("MovementSpeedSlider")).GetComponent<Slider>().value = GlobalInformation.movementSpeed;
         GameObject.FindObjectsOfType<GameObject>().First(obj => obj.name.Equals("RotationSpeedSlider")).GetComponent<Slider>().value = GlobalInformation.rotationSpeed;
@@ -46,10 +46,27 @@ public class MainMenuController : MonoBehaviour
         GlobalInformation.currScene = "Bigscale";
     }
 
-    public void setVrReady(bool input)
+    public void setPlatform(int input)
     {
-        vrReady = input;
-        GlobalInformation.setVrReady(vrReady);
+        Debug.Log("test");
+        if (input == 0){
+            GlobalInformation.desktopReady  = true;
+            GlobalInformation.vrReady       = false;
+            GlobalInformation.mobileReady   = false;
+        }
+        if(input == 1){
+            GlobalInformation.desktopReady  = false;
+            GlobalInformation.vrReady       = true;
+            GlobalInformation.mobileReady   = false;
+        }
+        if (input == 2){
+            GlobalInformation.desktopReady  = false;
+            GlobalInformation.vrReady       = false;
+            GlobalInformation.mobileReady   = true;
+        }
+        Debug.Log("GlobalInformation.desktopReady: " + GlobalInformation.desktopReady);
+        Debug.Log("GlobalInformation.vrReady: " + GlobalInformation.vrReady);
+        Debug.Log("GlobalInformation.mobileReady: " + GlobalInformation.mobileReady);
     }
 
     //The division by 10 is because the Slider moves in steps does steps, thats completely optional
